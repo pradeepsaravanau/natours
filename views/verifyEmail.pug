@@ -1,0 +1,14 @@
+extend base
+block content 
+ main.main
+  .login-form
+    h2.heading-secondary.ma-bt-lg Verify Email
+      form.form--verify-email
+        .form__group
+          label.form__label(for='email') Email address
+          input#email.form__input(type='email', placeholder=`${email ? email : ''}`, required ,disabled=true)
+        .form__group
+          label.form__label(for='token') token
+          input#token.form__input(type='number', placeholder='1234',maxlength='4', required style='color : #999')
+        .form__group
+          button.btn.btn--green Verify

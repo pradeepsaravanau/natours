@@ -1,0 +1,22 @@
+extends base
+block content
+ main.main
+  each review in reviews
+   main.main
+    .login-form
+      h2.heading-secondary.ma-bt-lg(class='tourId') Review | #{review.tour.name}
+      form.form.form--myReviews
+        .form__group
+          label.form__label(for='email') Email address
+          input#email.form__input(type='email', placeholder=`${user.email}`, disabled=true)
+        .form__group.ma-bt-md
+         label.form__label(for='ratings') Ratings
+         .reviews__review
+          .reviews__rating
+           each star in [1 , 2, 3 , 4 ,5 ]
+            svg.reviews__star(class=`reviews__star--${review.rating >= star ?'active' : 'inactive'}`)
+             use(xlink:href='/img/icons.svg#icon-star')
+        .form__group.ma-bt-md
+          label.form__label(for='description') Review
+          textarea#description.form__input(type='text', placeholder=`${review.review}`, required, minlength='10' , maxlength='30' , rows = 4 , disabled = true)
+        
