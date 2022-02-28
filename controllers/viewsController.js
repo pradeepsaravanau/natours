@@ -42,7 +42,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
       });
     }
   }
-  console.log(req.alreadyBooked);
+  console.log('booked', req.alreadyBooked);
   //2) build the template
   // res
   //   .status(200)
