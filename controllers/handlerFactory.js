@@ -45,6 +45,7 @@ exports.getOne = (Model, popOptions) =>
     let query = Model.findById(req.params.id);
     if (popOptions) query = query.populate(popOptions);
     const doc = await query;
+    console.log(doc);
     if (!doc) {
       return next(new AppError('no document found with that ID', 404));
     }
