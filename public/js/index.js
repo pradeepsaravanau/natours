@@ -14,7 +14,6 @@ const loginForm = document.querySelector('.form--login');
 const signupForm = document.querySelector('.form--signup');
 const reviewForm = document.querySelector('.form--review');
 const confirmEmailForm = document.querySelector('.form--verify-email');
-console.log(confirmEmailForm);
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -24,7 +23,6 @@ const bookBtn = document.getElementById('book-tour');
 //DELEGATION
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
-  console.log(locations);
   displayMap(locations);
 }
 
@@ -47,7 +45,6 @@ if (userDataForm)
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(form);
     const email = document.getElementById('email').value;
     const name = document.getElementById('name').value;
     updateSettings(form, 'data');
@@ -77,7 +74,6 @@ if (bookBtn) {
     //dataset-tour-id tour-id is converted to tourId
     // const tourId = e.target.dataset.tourId;
     const dateId = document.getElementById('date').value;
-    console.log('date id', dateId);
     const { tourId } = e.target.dataset;
     bookTour(tourId, dateId);
     e.target.textContent = 'Book Tour Now';
@@ -100,7 +96,6 @@ if (reviewForm) {
   Review.addEventListener('click', e => {
     if (e.target.closest('.review__star--big')) {
       rating = e.target.closest('.review__star--big').dataset.star;
-      console.log(rating);
       for (let i = 0; i < 5; i++) {
         if (rating > i) {
           if (e.target.closest('.reviews__rating')) {
@@ -126,7 +121,6 @@ if (reviewForm) {
     e.preventDefault();
     const review = document.getElementById('description').value;
     const tour = document.querySelector('.tourId').dataset.id;
-    console.log(tour);
     await createReview({ tour, rating, review });
   });
 }
@@ -135,7 +129,6 @@ if (confirmEmailForm) {
     e.preventDefault();
     const confirmEmailToken = document.getElementById('token').value;
     const email = document.getElementById('email').placeholder;
-    console.log(confirmEmailToken);
     confirmEmail(confirmEmailToken, email);
   });
 }

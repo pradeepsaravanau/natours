@@ -223,11 +223,11 @@ tourSchema.pre(/^find/, function(next) {
   });
   next();
 });
-tourSchema.post(/^find/, function(docs, next) {
-  console.log(`query took ${Date.now() - this.start} milliseconds`);
+// tourSchema.post(/^find/, function(docs, next) {
+//   console.log(`query took ${Date.now() - this.start} milliseconds`);
 
-  next();
-});
+//   next();
+// });
 //AGGREATION middleware
 // tourSchema.pre('aggregate', function(next) {
 //   //we need to filter out the secretTour out we need to add match

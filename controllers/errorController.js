@@ -28,8 +28,6 @@ const sendErrorDev = (err, req, res) => {
   //original url is the entire url not with the host
   //API
   if (req.originalUrl.startsWith('/api')) {
-    console.log(err.message);
-
     return res.status(err.statusCode).json({
       status: err.status,
       error: err,
@@ -48,7 +46,6 @@ const sendErrorDev = (err, req, res) => {
 };
 const sendErrorProd = (err, req, res) => {
   //API
-  console.log(err.isOperational);
   if (req.originalUrl.startsWith('/api')) {
     //A) Operational , trusted error : send message to the client
     if (err.isOperational) {

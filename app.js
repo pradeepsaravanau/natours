@@ -7,7 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
-
+const compression = require('compression');
 //adding method to bunch of app variable
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -87,6 +87,7 @@ app.use(xss());
 //we dont need to use /public/overview coz we indicated the express to set it to the root the express will look for the file  overview.html in public folder
 // http://127.0.0.1:3000/overview.html this url will work only use use the static middleware like this for tha dirnames path
 //test middleware
+app.use(compression());
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   // console.log(req.cookies);
