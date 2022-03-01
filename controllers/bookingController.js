@@ -23,11 +23,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get('host')}/my-tours`,
+    success_url: `${req.protocol}://${req.get('host')}/my-tours/?${date}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
-    id: req.params.dateId,
     mode: 'payment',
     line_items: [
       {
@@ -62,11 +61,12 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
 };
 const createBookingCheckOut = async session => {
   const tour = session.client_reference_id;
-  const date = session.id;
+  const { date } = req.query;
+  console.log(date);
   const user = (await User.findOne({ email: session.customer_email })).id;
 
   const price = session.amount_total / 100;
-  await Booking.create({ tour, user, price, date });
+  await Booking.create({ tour, user, price });
 };
 exports.webhookCheckout = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
