@@ -36,7 +36,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         name: `${tour.name} Tour`,
         description: tour.summary,
         //one of the reason why stripe works only while hosted because down the images specified here will be looked by the stripe server , so it should be hosted it doenst know d:natours/public/img/tour-1.jpg
-        images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
+        images: [
+          `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`
+        ],
         //cents
         amount: tour.price * 100,
         currency: 'usd',
