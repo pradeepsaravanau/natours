@@ -5,7 +5,7 @@ export const confirmEmail = async (token, email) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'api/v1/users/verifyEmail/',
+      url: '/api/v1/users/verifyEmail/',
       data: {
         confirmEmailToken: token,
         email
