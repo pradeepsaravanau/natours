@@ -74,6 +74,7 @@ if (bookBtn) {
     //dataset-tour-id tour-id is converted to tourId
     // const tourId = e.target.dataset.tourId;
     const dateId = document.getElementById('date').value;
+    console.log(dateId);
     const { tourId } = e.target.dataset;
     bookTour(tourId, dateId);
     e.target.textContent = 'Book Tour Now';

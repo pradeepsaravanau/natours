@@ -45,7 +45,7 @@ bookingSchema.index(
 );
 bookingSchema.pre('save', async function(next) {
   const tour = await Tour.findById(this.tour);
-  console.log('this', tour, this.date);
+  console.log('this', tour, this.date, this);
   if (!tour) return next();
   const startDate = tour.startDates.id(this.date);
   console.log(startDate);
