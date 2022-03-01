@@ -23,26 +23,27 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    // success_url: `${req.protocol}://${req.get('host')}/?tour=${
-    //   req.params.tourId
-    // }&user=${req.user.id}&price=${tour.price}&date=${req.params.dateId}`,
     success_url: `${req.protocol}://${req.get('host')}/my-tours`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
-    //allows us to pass info about sessions we are working
-    client_reference_id: req.params.tourID,
+    client_reference_id: req.params.tourId,
+    mode: 'payment',
     line_items: [
       {
-        name: `${tour.name} Tour`,
-        description: tour.summary,
-        //one of the reason why stripe works only while hosted because down the images specified here will be looked by the stripe server , so it should be hosted it doenst know d:natours/public/img/tour-1.jpg
-        images: [
-          `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`
-        ],
-        //cents
-        amount: tour.price * 100,
-        currency: 'usd',
-        quantity: 1
+        quantity: 1,
+        price_data: {
+          currency: 'usd',
+          unit_amount: tour.price * 100,
+          product_data: {
+            name: `${tour.name} Tour`,
+            description: tour.summary,
+            images: [
+              `${req.protocol}://${req.get('host')}/img/tours/${
+                tour.imageCover
+              }`
+            ]
+          }
+        }
       }
     ]
   });
@@ -61,7 +62,7 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
 const createBookingCheckOut = async session => {
   const tour = session.client_reference_id;
   const user = (await User.findOne({ email: session.customer_email })).id;
-  const price = session.line_items[0].amount / 100;
+  const price = session.amount_total / 100;
   await Booking.create({ tour, user, price });
 };
 exports.webhookCheckout = (req, res, next) => {
