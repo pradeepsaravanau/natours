@@ -1,14 +1,14 @@
 const express = require('express');
 const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
+// const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
 
 //we want /overview to be the route so only /
 router.get(
   '/',
-  bookingController.createBookingCheckOut,
+  // bookingController.createBookingCheckOut,
   authController.isLoggedIn,
   viewsController.getOverview
 );

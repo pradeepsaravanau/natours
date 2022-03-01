@@ -1,6 +1,7 @@
 //require('stripe') = exposes a function pass in the stripe secret key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tourModel');
+const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 // const AppError = require('../utils/appError');
@@ -22,9 +23,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get('host')}/?tour=${
-      req.params.tourId
-    }&user=${req.user.id}&price=${tour.price}&date=${req.params.dateId}`,
+    // success_url: `${req.protocol}://${req.get('host')}/?tour=${
+    //   req.params.tourId
+    // }&user=${req.user.id}&price=${tour.price}&date=${req.params.dateId}`,
+    success_url: `${req.protocol}://${req.get('host')}/my-tours`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     //allows us to pass info about sessions we are working
@@ -49,20 +51,33 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createBookingCheckOut = catchAsync(async (req, res, next) => {
-  //this is only Temproray , because its unsecure , everyone can make booking without paying
-  const { tour, user, price, date } = req.query;
-  if (!tour && !user && !price && !date) return next();
-  await Booking.create({ tour, user, price, date });
-  // // req.originalUrl = ${req.protocol}://${req.get('host')}/?tour=${
-  //     req.params.tourId
-  //   }&user=${req.user.id}&price=${tour.price}`
-  res.redirect(req.originalUrl.split('?')[0]);
-});
 exports.getTourIdOrGetUserId = (req, res, next) => {
   if (req.params.tourId) req.params.tourId = req.params.tourId;
   if (req.params.userId) req.params.userId = req.params.userId;
   next();
+};
+const createBookingCheckOut = async session => {
+  const tour = session.client_reference_id;
+  const user = (await User.findOne({ email: session.customer_email })).id;
+  const price = session.line_items[0].amount / 100;
+  await Booking.create({ tour, user, price });
+};
+exports.webhookCheckout = (req, res, next) => {
+  const signature = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    return res.status(400).send(`webhook error ${err.message}`);
+  }
+  if (event.type === 'checkout.session.completed')
+    createBookingCheckOut(event.data.object);
+
+  res.status(200).json({ received: true });
 };
 
 exports.getAllBookings = factory.getAll(Booking);

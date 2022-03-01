@@ -17,6 +17,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRoutes');
 
 //start express app
@@ -85,8 +86,16 @@ app.use('/api', limiter);
 //body parser , reading data from the body into req.body
 //limit the amount of data coming from body
 //when we have have body larger than 10kb it wont accept it
+//parse the body in a raw format
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
+//the body will be parced and converted to json inorder to webhooks works we dont pass the json data so we define the route here
 app.use(express.json({ limit: '10kb' }));
 //the way the form sends the data is called urlencoded becuase in user update data  we specified the method and the url in the html pug template itselfs so we use expresss.urlencoded
+
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 //we serve static files in express like this so only we can use overview.html
