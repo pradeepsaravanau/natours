@@ -12,6 +12,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
   const startDate = tour.startDates.id(req.params.dateId);
   //create checkout session
+  console.log(startDate);
   if (!startDate) return next();
 
   if (startDate.soldOut) {
