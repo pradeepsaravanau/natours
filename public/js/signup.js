@@ -18,10 +18,10 @@ export const signup = async (name, email, password, passwordConfirm) => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'please verify your email address!');
-      window.setTimeout(() => {
-        location.reload(true);
-        location.assign(`/`);
-      }, 1500);
+      // window.setTimeout(() => {
+      //   location.reload(true);
+      //   location.assign(`/`);
+      // }, 1500);
     }
   } catch (err) {
     showAlert('error', err);
