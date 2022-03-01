@@ -59,9 +59,9 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
   if (req.params.userId) req.params.userId = req.params.userId;
   next();
 };
-const createBookingCheckOut = async session => {
+const createBookingCheckOut = async (session, req) => {
   const tour = session.client_reference_id;
-  const { date } = req.query;
+  const { date } = req;
   console.log(date);
   const user = (await User.findOne({ email: session.customer_email })).id;
 
@@ -81,7 +81,7 @@ exports.webhookCheckout = (req, res, next) => {
     return res.status(400).send(`webhook error ${err.message}`);
   }
   if (event.type === 'checkout.session.completed')
-    createBookingCheckOut(event.data.object);
+    createBookingCheckOut(event.data.object, req.query);
 
   res.status(200).json({ received: true });
 };
