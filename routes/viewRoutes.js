@@ -13,11 +13,7 @@ router.get(
   viewsController.getOverview
 );
 router.get('/signup', authController.isLoggedIn, viewsController.getSignupForm);
-router.get(
-  '/users/:email',
-  authController.isLoggedIn,
-  viewsController.confirmEmail
-);
+router.get('/:email', authController.isLoggedIn, viewsController.confirmEmail);
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/me', authController.protect, viewsController.getAccount);

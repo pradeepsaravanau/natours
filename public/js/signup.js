@@ -18,7 +18,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
       showAlert('success', 'please verify your email address!');
       //setting timeout with 1500ms and assigning the home page with location.assign
       window.setTimeout(() => {
-        location.assign(`/users/${email}`);
+        location.assign(`/${email}`);
       }, 1500);
     }
   } catch (err) {
