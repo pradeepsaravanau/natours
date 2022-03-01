@@ -16,7 +16,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'please verify your email address!');
-      console.log(location.hostname);
+      console.log('location name is', location.hostname);
       window.setTimeout(() => {
         location.assign(`${location.hostname}/${email}`);
       }, 1500);
