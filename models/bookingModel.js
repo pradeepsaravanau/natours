@@ -47,7 +47,7 @@ bookingSchema.pre('save', async function(next) {
   const tour = await Tour.findById(this.tour);
   if (!tour) return next();
   const startDate = tour.startDates.id(this.date);
-
+  console.log(startDate);
   if (startDate.soldOut) {
     return next(new AppError('Booking for that tour is sold out', 404));
   }
