@@ -19,6 +19,6 @@ export const confirmEmail = async (token, email) => {
       }, 1500);
     }
   } catch (err) {
-    showAlert('error', err.response.data.message);
+    showAlert('error', 'error while verifying email');
   }
 };
