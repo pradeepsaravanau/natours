@@ -63,3 +63,14 @@ process.on('unhandledRejection', err => {
     process.exit(1);
   });
 });
+
+//sigterm signal
+//a heroky dyno is the name that heroku uses for a container which is the container , it will refresh the app 24hrs and to keep our in a healthy state
+//with sigterm signal our application will shutdown immediately and users requesting at the time those requests will hang in the air
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED .shutting  down gracefully');
+  //server.close waits until pending requests are finished
+  server.close(() => {
+    console.log('💥process terminated!');
+  });
+});

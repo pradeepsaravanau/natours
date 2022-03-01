@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+
 const compression = require('compression');
 //adding method to bunch of app variable
 const AppError = require('./utils/appError');
@@ -19,6 +20,7 @@ const viewRouter = require('./routes/viewRoutes');
 
 //start express app
 const app = express();
+app.enable('trust proxy');
 
 //set the the template engine to pug
 //express supports most common enginees out of the box , we  need to install and no need require

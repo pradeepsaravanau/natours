@@ -6,26 +6,31 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
 
-const cookieOptions = {
-  expires: new Date(
-    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-  ),
-  //send for encrypted connection only https
-  //cannot be accessed or modified prevents cross site scripting atks
-  httpOnly: true
-};
-
 const signToken = id => {
   //{ id: id } = {id}
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-  res.cookie('jwt', token, cookieOptions);
+  //there is req.secure in every request , only when connection is secure we set req.secure
+  // if (req.secure || req.headers('x-forwared-proto') === 'https')
+  //   cookieOptions.secure = true;
+  // cookieOptions.secure =
+  //   req.secure || req.headers('x-forwared-proto') === 'https';
+
+  res.cookie('jwt', token, {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    //send for encrypted connection only https
+    //cannot be accessed or modified prevents cross site scripting atks
+    httpOnly: true,
+    secure: req.secure || req.headers('x-forwared-proto') === 'https'
+  });
+  //we need to trust proxy which will trust req.secure because req.secure will not work in first place , heroku modifies and redirects incoming requests
   //only remove password from output
   user.password = undefined;
   res.status(statusCode).json({
@@ -80,7 +85,7 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   console.log(url);
   await new Email(user, url).sendWelcome();
-  createSendToken(user, 201, res);
+  createSendToken(user, 201, req, res);
 });
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -98,7 +103,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('incorrect email or password', 400));
   }
   //3) if everthing ok , send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 exports.logout = (req, res) => {
   //set the jwt to dummy text previously it was token but now its dummy text ,also set the expires in 10seconds
@@ -262,7 +267,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   await user.save();
   //3) update changedPasswordAt property for the user
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 
   //login the user in , send jwt
 });
@@ -292,5 +297,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
   //4) log user in , send Jwt
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
