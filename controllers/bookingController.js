@@ -10,20 +10,17 @@ const factory = require('./handlerFactory');
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
-  console.log('my tour is', tour);
-  console.log(req.params.tourId, req.params.dateId);
   const date = await tour.startDates.id(req.params.dateId);
   //create checkout session
-  console.log(date);
   if (!date) return next();
 
-  // if (date.soldOut) {
-  //   return res.status(200).json({
-  //     status: 'error',
-  //     message:
-  //       'Booking for this date is already soldout Please Choose another Date'
-  //   });
-  // }
+  if (date.soldOut) {
+    return res.status(200).json({
+      status: 'error',
+      message:
+        'Booking for this date is already soldout Please Choose another Date'
+    });
+  }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     success_url: `${req.protocol}://${req.get('host')}/my-tours`,
