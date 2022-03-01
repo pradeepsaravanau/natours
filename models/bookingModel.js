@@ -45,12 +45,13 @@ bookingSchema.index(
 );
 bookingSchema.pre('save', async function(next) {
   const tour = await Tour.findById(this.tour);
+  console.log('this', tour, this.date);
   if (!tour) return next();
-  // const startDate = tour.startDates.id(this.date);
-  // console.log(startDate);
-  // if (startDate.soldOut) {
-  //   return next(new AppError('Booking for that tour is sold out', 404));
-  // }
+  const startDate = tour.startDates.id(this.date);
+  console.log(startDate);
+  if (startDate.soldOut) {
+    return next(new AppError('Booking for that tour is sold out', 404));
+  }
   startDate.participants += 1;
   if (tour.maxGroupSize <= startDate.participants) {
     startDate.soldOut = true;
