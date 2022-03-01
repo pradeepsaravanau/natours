@@ -12,12 +12,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
   console.log('my tour is', tour);
   console.log(req.params.tourId, req.params.dateId);
-  const startDate = await tour.startDates.id(req.params.dateId);
+  const date = await tour.startDates.id(req.params.dateId);
   //create checkout session
-  console.log(startDate.soldOut);
-  if (!startDate) return next();
+  console.log(date.soldOut);
+  if (!date) return next();
 
-  if (startDate.soldOut) {
+  if (date.soldOut) {
     return res.status(200).json({
       status: 'error',
       message:
