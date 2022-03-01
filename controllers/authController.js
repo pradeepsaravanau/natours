@@ -49,7 +49,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     confirmEmailToken: token
   });
   console.log(req.get('host'));
-  const url = `/${newUser.email}`;
+  const url = `${req.protocol}/${newUser.email}`;
   await new Email(newUser, url).sendEmailConfirmation();
   // createSendToken(newUser, 201, res);
   res.status(200).json({
