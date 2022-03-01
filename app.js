@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 
 const compression = require('compression');
+const cors = require('cors');
 //adding method to bunch of app variable
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -34,6 +35,20 @@ app.set('views', path.join(__dirname, 'views'));
 //this will basically create a path joining directory name /views , but we dont always no the path we are receiving from somewhere already has / or not so you will see this function will all the inorder to this kind of bug
 //serving stating files
 // app.use(express.static(`${__dirname}/public`));
+//implement cors
+//sets Access-Control-Allow-Origin *
+//* means all the requests
+//api.natours.com , natours.com
+// app.use(
+//   cors({
+//     origin: 'https://www.natours.com'
+//   })
+// );
+//if we have front end at natours.com above
+app.use(cors());
+//similar app.get app.post app.put app.delete app.//app.options is just another http method
+app.options('*', cors());
+// app.options('api/v1/tours/:id', cors());
 app.use(express.static(path.join(__dirname, 'public')));
 //Set security HTTP headers
 //call the helmet that will then the produce the middleware that should be put right in b/w app.use() . in app.use we always need a function not a function call
@@ -120,6 +135,7 @@ app.use(
 //route here is route /
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
+// app.use('/api/v1/tours',cors(), tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);

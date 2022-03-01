@@ -74,3 +74,5 @@ process.on('SIGTERM', () => {
     console.log('💥process terminated!');
   });
 });
+//cors - cross origin resource sharing
+//natoursups/api/v1/tours is our api and another website called example.com tries to access our api then it is called cross origin resource sharing
