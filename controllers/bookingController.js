@@ -23,7 +23,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get('host')}/my-tours/`,
+    success_url: `${req.protocol}://${req.get('host')}/my-tours/?${date._id}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -41,8 +41,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
               `${req.protocol}://${req.get('host')}/img/tours/${
                 tour.imageCover
               }`
-            ],
-            date: date._id
+            ]
           }
         }
       }
@@ -85,7 +84,7 @@ exports.webhookCheckout = (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`webhook error ${err.message}`);
   }
-  console.log('req is', req.dateId);
+  console.log('req is', req.query);
   if (event.type === 'checkout.session.completed')
     createBookingCheckOut(event.data.object, req.dateId);
 
