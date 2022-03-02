@@ -11,9 +11,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
   const date = await tour.startDates.id(req.params.dateId);
+
   //create checkout session
   if (!date) return next();
-
+  req.dateId = date;
   if (date.soldOut) {
     return res.status(200).json({
       status: 'error',
@@ -41,8 +42,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
               `${req.protocol}://${req.get('host')}/img/tours/${
                 tour.imageCover
               }`
-            ],
-            date: date
+            ]
           }
         }
       }
@@ -60,9 +60,9 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
   if (req.params.userId) req.params.userId = req.params.userId;
   next();
 };
-const createBookingCheckOut = async session => {
+const createBookingCheckOut = async (session, dateId) => {
   const tour = session.client_reference_id;
-  const { date } = session.display_items[0].product_data;
+  const { date } = dateId;
   const user = (await User.findOne({ email: session.customer_email })).id;
 
   const price = session.amount_total / 100;
@@ -82,7 +82,7 @@ exports.webhookCheckout = (req, res, next) => {
   }
   console.log('req is', req);
   if (event.type === 'checkout.session.completed')
-    createBookingCheckOut(event.data.object);
+    createBookingCheckOut(event.data.object, req.dateId);
 
   res.status(200).json({ received: true });
 };
