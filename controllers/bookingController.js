@@ -14,7 +14,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
   //create checkout session
   if (!date) return next();
-  req.dateId = date._id;
   if (date.soldOut) {
     return res.status(200).json({
       status: 'error',
@@ -42,7 +41,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
               `${req.protocol}://${req.get('host')}/img/tours/${
                 tour.imageCover
               }`
-            ]
+            ],
+            date: date._id
           }
         }
       }
@@ -63,7 +63,11 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
 const createBookingCheckOut = async (session, dateId) => {
   console.log('req is', dateId);
   const tour = session.client_reference_id;
-  const { date } = dateId;
+  console.log(session.line_items[0].price_data.description);
+  console.log(session.display_items[0].price_data.description);
+  const { date } = session.display_items[0].price_data;
+  console.log(date);
+  console.log(session.line_items[0].price_data);
   const user = (await User.findOne({ email: session.customer_email })).id;
 
   const price = session.amount_total / 100;
