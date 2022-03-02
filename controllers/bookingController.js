@@ -62,7 +62,7 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
 };
 const createBookingCheckOut = async session => {
   const tour = session.client_reference_id;
-  const { date } = session.product_data;
+  const { date } = session.display_items[0].product_data;
   const user = (await User.findOne({ email: session.customer_email })).id;
 
   const price = session.amount_total / 100;
