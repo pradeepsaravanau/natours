@@ -6,6 +6,7 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 //we want /overview to be the route so only /
+router.use(viewsController.alerts);
 router.get(
   '/',
   // bookingController.createBookingCheckOut,

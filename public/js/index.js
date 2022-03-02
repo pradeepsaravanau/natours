@@ -8,6 +8,7 @@ import { bookTour } from './stripe';
 import { signup } from './signup';
 import { createReview } from './createReview';
 import { confirmEmail } from './confirmEmail';
+import { showAlert } from './alert';
 //DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
@@ -133,3 +134,5 @@ if (confirmEmailForm) {
     confirmEmail(confirmEmailToken, email);
   });
 }
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alert) showAlert('success', alertMessage, 20);
