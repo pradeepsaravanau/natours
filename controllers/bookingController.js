@@ -64,8 +64,6 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
 };
 const createBookingCheckOut = async session => {
   const tour = session.client_reference_id;
-  console.log(session.line_items[0].price_data.description);
-  console.log(session.display_items[0].price_data.description);
   const date = globalDate;
   console.log(date);
   console.log(session.line_items[0].price_data);
