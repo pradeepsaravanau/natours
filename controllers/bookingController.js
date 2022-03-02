@@ -7,11 +7,12 @@ const catchAsync = require('../utils/catchAsync');
 // const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
+let globalDate;
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
   const date = await tour.startDates.id(req.params.dateId);
-
+  globalDate = date._id;
   //create checkout session
   if (!date) return next();
   if (date.soldOut) {
@@ -61,12 +62,11 @@ exports.getTourIdOrGetUserId = (req, res, next) => {
   if (req.params.userId) req.params.userId = req.params.userId;
   next();
 };
-const createBookingCheckOut = async (session, dateId) => {
-  console.log('req is', dateId);
+const createBookingCheckOut = async session => {
   const tour = session.client_reference_id;
   console.log(session.line_items[0].price_data.description);
   console.log(session.display_items[0].price_data.description);
-  const date = dateId;
+  const date = globalDate;
   console.log(date);
   console.log(session.line_items[0].price_data);
   const user = (await User.findOne({ email: session.customer_email })).id;
@@ -89,7 +89,7 @@ exports.webhookCheckout = (req, res, next) => {
   console.log('req is', req.query);
   console.log('req is', req.query.date);
   if (event.type === 'checkout.session.completed')
-    createBookingCheckOut(event.data.object, req.query.date);
+    createBookingCheckOut(event.data.object);
   res.redirect(req.originalUrl.split('?')[0]);
   res.status(200).json({ received: true });
 };
