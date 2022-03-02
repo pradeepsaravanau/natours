@@ -8953,36 +8953,37 @@ function () {
 
           case 3:
             session = _context.sent;
+            console.log(session); // 2)create checkout form + charge credit card
 
             if (!(session.data.status === 'error')) {
-              _context.next = 8;
+              _context.next = 9;
               break;
             }
 
             throw new Error(session.data.message);
 
-          case 8:
-            _context.next = 10;
+          case 9:
+            _context.next = 11;
             return stripe.redirectToCheckout({
               sessionId: session.data.session.id
             });
 
-          case 10:
-            _context.next = 16;
+          case 11:
+            _context.next = 17;
             break;
 
-          case 12:
-            _context.prev = 12;
+          case 13:
+            _context.prev = 13;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             (0, _alert.showAlert)('error', _context.t0);
 
-          case 16:
+          case 17:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 12]]);
+    }, _callee, null, [[0, 13]]);
   }));
 
   return function bookTour(_x, _x2) {
@@ -9565,6 +9566,7 @@ if (bookBtn) {
     // const tourId = e.target.dataset.tourId;
 
     var dateId = document.getElementById('date').value;
+    console.log(dateId);
     var tourId = e.target.dataset.tourId;
     (0, _stripe.bookTour)(tourId, dateId);
     e.target.textContent = 'Book Tour Now';
@@ -9674,7 +9676,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55159" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60975" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
