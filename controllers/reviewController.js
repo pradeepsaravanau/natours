@@ -18,6 +18,7 @@ exports.getReview = factory.getOne(Review);
 exports.createReview = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.body.tour);
   const reviewed = await Review.find({ tour: tour.id, user: req.user.id });
+  console.log('reviewed', reviewed);
   if (reviewed) {
     return next(
       new AppError('You have already written review for this tour', 500)
