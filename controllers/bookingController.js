@@ -13,6 +13,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
   const date = await tour.startDates.id(req.params.dateId);
   globalDate = date._id;
+  res.locals.date = date._id;
   //create checkout session
   if (!date) return next();
   if (date.soldOut) {
@@ -81,6 +82,7 @@ exports.webhookCheckout = (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`webhook error ${err.message}`);
   }
+  console.log(res.locals.date);
   if (event.type === 'checkout.session.completed')
     createBookingCheckOut(event.data.object);
   res.status(200).json({ received: true });
